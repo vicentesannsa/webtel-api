@@ -1,0 +1,16 @@
+{
+  "name": "webtel-api",
+  "version": "0.0.1",
+  "description": "API REST para la página de Telemática con express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "APIREST",
+    "MVC",
+    "Express.JS"
+  ],
+  "author": "vicentesamsa",
+  "license": "ISC"
+}
