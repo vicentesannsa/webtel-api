@@ -2,9 +2,11 @@
   "name": "webtel-api",
   "version": "0.0.1",
   "description": "API REST para la página de Telemática con express",
-  "main": "index.js",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:mysql": "node --watch server-with-mysql.js"
   },
   "keywords": [
     "APIREST",
@@ -12,5 +14,14 @@
     "Express.JS"
   ],
   "author": "vicentesamsa",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "5.1.1",
+    "cors": "2.8.5",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
+    "morgan": "1.10.0",
+    "mysql2": "3.12.0",
+    "zod": "3.24.1"
+  }
 }
