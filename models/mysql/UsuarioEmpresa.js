@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import connection from '../../libs/connection.js';
 
-export class UsuarioUSMModel {
+export class UsuarioEmpresaModel {
     static async getAll({ current_page, per_page }) {
         try {
-            const [result] = await connection.query("SELECT usuario.id_usuario, usuario.username, usuario.correo, usuario.nombre, usuario.apellido_p, usuario.apellido_m, usuario.tipo_usuario, usuario_usm.rol, usuario_usm.sede FROM usuario INNER JOIN usuario_usm ON usuario.id_usuario = usuario_usm.id_usuario;");
+            const [result] = await connection.query("SELECT usuario.id_usuario, usuario.username, usuario.correo, usuario.nombre, usuario.apellido_p, usuario.apellido_m, usuario.tipo_usuario, usuario_empresa.rut, usuario_empresa.estudio, usuario_empresa.pais FROM usuario INNER JOIN usuario_empresa ON usuario.id_usuario = usuario_empresa.id_usuario;");
             return result;
         } catch (error) {
             console.error(error);
@@ -22,13 +22,13 @@ export class UsuarioUSMModel {
                 if (correo) return { message: 'Correo electrónico ya existente' };
                 if (username === data.username) return { message: 'Nombre de usuario ya existente' };
             }
-            const [usuario_usm] = await connection.query("SELECT rol FROM usuario_usm WHERE rol = ?;", [data.rol]);
-            if (usuario_usm.length !== 0) {
-                const rol = usuario_usm[0]['rol'];
-                if (rol) return { message: 'Rol de alumno ya existente' };
+            const [usuario_empresa] = await connection.query("SELECT rut FROM usuario_empresa WHERE rut = ?;", [data.rut]);
+            if (usuario_empresa.length !== 0) {
+                const rut = usuario_empresa[0]['rut'];
+                if (rut) return { message: 'RUT ya existente' };
             }
             const hashedPassword = await bcrypt.hash(data.password, Number(process.env.SALT_ROUNDS));
-            const [result] = await connection.query("CALL InsertUsuarioUSM(?, ?, ?, ?, ?, ?, ?, ?, ?);", [data.email, data.firstName, data.lastName_p, data.lastName_m, hashedPassword, "usm", data.rol, data.sede, data.username]);
+            const [result] = await connection.query("CALL InsertUsuarioEmpresa(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [data.email, data.firstName, data.lastName_p, data.lastName_m, hashedPassword, "empresa", data.rut, data.study, data.country, data.username]);
             if (result.affectedRows === 3) return { message: 'Usuario creado correctamente', status: 'success' };
         } catch (error) {
             console.error(error);
@@ -38,7 +38,7 @@ export class UsuarioUSMModel {
 
     static async getById({ id }) {
         try {
-            const [result] = await connection.query("SELECT usuario.id_usuario, usuario.username, usuario.correo, usuario.nombre, usuario.apellido_p, usuario.apellido_m, usuario.tipo_usuario, usuario_usm.rol, usuario_usm.sede FROM usuario INNER JOIN usuario_usm ON usuario.id_usuario = usuario_usm.id_usuario WHERE usuario.id_usuario = ?;", [id]);
+            const [result] = await connection.query("SELECT usuario.id_usuario, usuario.username, usuario.correo, usuario.nombre, usuario.apellido_p, usuario.apellido_m, usuario.tipo_usuario, usuario_empresa.rut, usuario_empresa.estudio, usuario_empresa.pais FROM usuario INNER JOIN usuario_empresa ON usuario.id_usuario = usuario_empresa.id_usuario WHERE usuario.id_usuario = ?", [id]);
             if (result.length === 0) return []
             return result[0];
         } catch (error) {
@@ -49,7 +49,7 @@ export class UsuarioUSMModel {
 
     static async delete({ id }) {
         try {
-            const [result] = await connection.query("CALL eliminar_usuario_usm(?);", [id]);
+            const [result] = await connection.query("CALL Eliminar_Usuario_Empresa(?);", [id]);
             return (result.affectedRows === 3) ? { message: 'Usuario eliminado correctamente' } : { message: 'Ha ocurrido un problema al intentar eliminar el usuario' };
         } catch (error) {
             console.error(error);
@@ -59,13 +59,18 @@ export class UsuarioUSMModel {
 
     static async update({ id, data }) {
         try {
-            const { sede, ...user } = data;
+            const { study, country, ...user } = data;
 
             const message = {};
 
-            if (sede) {
-                const [result] = await connection.query("UPDATE usuario_usm SET sede = ? WHERE id_usuario = ?;", [sede, id]);
-                if (result.affectedRows === 1) message.sede = 'El campus del alumno ha sido actualizado';
+            if (study || country) {
+                const empresa = {
+                    estudio: study,
+                    pais: country,
+                };
+                const filteredEmpresa = Object.fromEntries(Object.entries(empresa).filter(([_, value]) => value !== undefined));
+                const [result] = await connection.query("UPDATE usuario_empresa SET ? WHERE id_usuario = ?;", [filteredEmpresa, id]);
+                if (result.affectedRows === 1) message.empresa = 'Los datos han sido actualizados';
             }
 
             if (Object.keys(user).length > 0) {
@@ -76,7 +81,7 @@ export class UsuarioUSMModel {
                 };
                 const filteredUsuario = Object.fromEntries(Object.entries(usuario).filter(([_, value]) => value !== undefined));
                 const [result] = await connection.query("UPDATE usuario SET ? WHERE id_usuario = ?;", [filteredUsuario, id]);
-                if (result.affectedRows === 1) message.usuario = 'Los datos del alumno han sido actualizados';
+                if (result.affectedRows === 1) message.usuario = 'Los datos del usuario han sido actualizados';
             }
 
             return message;

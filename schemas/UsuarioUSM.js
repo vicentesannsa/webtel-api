@@ -7,7 +7,7 @@ const UsuarioUSMSchema = z.object({
     lastName_m: z.string().max(45),
     password: z.string().max(60),
     rol: z.string().max(45),
-    sede: z.string(z.enum(['San Joaquín', 'Valparaíso'])),
+    sede: z.enum(['San Joaquín', 'Valparaíso']),
     username: z.string().max(100)
 });
 
