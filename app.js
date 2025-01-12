@@ -1,7 +1,9 @@
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import logger from 'morgan';
 import { corsMiddleware } from './middlewares/cors.js';
 import { createRouter } from './routes/index.js';
+import { session } from './middlewares/session.js';
 
 export const createApp = ({ Model }) => {
     const app = express();
@@ -10,7 +12,11 @@ export const createApp = ({ Model }) => {
 
     app.use(express.json());
 
+    app.use(cookieParser());
+
     app.use(corsMiddleware());
+
+    app.use(session);
 
     app.use('/', createRouter({ Model }));
 
