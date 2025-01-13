@@ -29,4 +29,14 @@ export class UsuarioController {
             return error;
         }
     }
+
+    time = async (request, response) => {
+        try {
+            const time = await this.UsuarioModel.time();
+            response.json(time)
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    }
 }

@@ -9,6 +9,7 @@ const options = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOSTNAME,
     port: process.env.DB_PORT,
+    timezone: 'America/Santiago'
 };
 
 const connection = await mysql.createConnection(options);

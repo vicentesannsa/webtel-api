@@ -34,4 +34,9 @@ export class UsuarioModel {
             return error;
         }
     }
+
+    static async time() {
+        const [result] = await connection.query("SELECT NOW();");
+        return result[0]['NOW()'];
+    }
 }
