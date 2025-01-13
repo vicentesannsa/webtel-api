@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { createProfesorRouter } from './Profesor.js';
 import { createUsuarioEmpresaRouter } from './UsuarioEmpresa.js';
 import { createUsuarioExternoRouter } from './UsuarioExterno.js';
 import { createUsuarioRouter } from './Usuario.js';
@@ -6,6 +7,8 @@ import { createUsuarioUSMRouter } from './UsuarioUSM.js';
 
 export const createRouter = ({ Model }) => {
     const router = Router();
+
+    router.use('/profesor', createProfesorRouter({ ProfesorModel: Model.Profesor }));
 
     router.use('/usuario', createUsuarioRouter({ UsuarioModel: Model.Usuario }));
 

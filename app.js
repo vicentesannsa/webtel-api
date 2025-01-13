@@ -18,9 +18,9 @@ export const createApp = ({ Model }) => {
 
     app.use(session);
 
-    app.use('/', createRouter({ Model }));
-
     app.use(logger('dev'));
+
+    app.use('/', createRouter({ Model }));
 
     const PORT = process.env.PORT ?? 1234;
     app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`));
