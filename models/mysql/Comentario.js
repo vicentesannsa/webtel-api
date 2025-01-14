@@ -15,7 +15,6 @@ export class ComentarioModel {
     static async create({ data }) {
         try {
             const [result] = await connection.query("INSERT INTO comentario (id_usuario, username, comentario, titulo, id_padre) VALUES (?, ?, ?, ?, ?);", [data.id_usuario, data.username, data.comentario, data.titulo, data.id_padre]);
-            console.log(result);
             if (result.affectedRows === 1) return { message: 'Comentario enviado correctamente', id: result.insertId }
         } catch (error) {
             console.error(error);
@@ -26,8 +25,6 @@ export class ComentarioModel {
     static async getById({ id }) {
         try {
             const [result] = await connection.query("SELECT * FROM comentario WHERE id_padre = ?;", [id]);
-            console.log(result);
-            
             if (result.length === 0) return []
             return result;
         } catch (error) {
