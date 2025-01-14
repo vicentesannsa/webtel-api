@@ -4,9 +4,12 @@ import { createUsuarioEmpresaRouter } from './UsuarioEmpresa.js';
 import { createUsuarioExternoRouter } from './UsuarioExterno.js';
 import { createUsuarioRouter } from './Usuario.js';
 import { createUsuarioUSMRouter } from './UsuarioUSM.js';
+import { createComentarioRouter } from './Comentario.js';
 
 export const createRouter = ({ Model }) => {
     const router = Router();
+
+    router.use('/comentario', createComentarioRouter({ComentarioModel: Model.Comentario}));
 
     router.use('/profesor', createProfesorRouter({ ProfesorModel: Model.Profesor }));
 
