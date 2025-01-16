@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { validateUsuario } from '../schemas/Usuario.js';
+import { NODE_ENV, SECRET_JWT_KEY } from '../config.js';
 
 export class UsuarioController {
     constructor({ UsuarioModel }) {
@@ -11,8 +12,8 @@ export class UsuarioController {
             const result = validateUsuario(request.body);
             if (result.error) return response.status(422).json({ error: JSON.parse(result.error.message) });
             const usuario = await this.UsuarioModel.login({ credentials: result.data });
-            const token = jwt.sign({ usuario }, process.env.SECRET_JWT_KEY, { expiresIn: '1h' });
-            response.cookie('access_token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', maxAge: 1000 * 60 * 60 });
+            const token = jwt.sign({ usuario }, SECRET_JWT_KEY, { expiresIn: '1h' });
+            response.cookie('access_token', token, { httpOnly: true, secure: NODE_ENV === 'production', sameSite: 'strict', maxAge: 1000 * 60 * 60 });
             response.status(202).json(usuario);
         } catch (error) {
             console.error(error);
@@ -33,7 +34,7 @@ export class UsuarioController {
     time = async (request, response) => {
         try {
             const time = await this.UsuarioModel.time();
-            response.json(time)
+            response.json({ time });
         } catch (error) {
             console.error(error);
             return error;

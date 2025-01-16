@@ -4,6 +4,7 @@ import logger from 'morgan';
 import { corsMiddleware } from './middlewares/cors.js';
 import { createRouter } from './routes/index.js';
 import { session } from './middlewares/session.js';
+import { PORT } from './config.js';
 
 export const createApp = ({ Model }) => {
     const app = express();
@@ -22,6 +23,6 @@ export const createApp = ({ Model }) => {
 
     app.use('/', createRouter({ Model }));
 
-    const PORT = process.env.PORT ?? 1234;
-    app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`));
+    const port = PORT ?? 1234;
+    app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
 };
