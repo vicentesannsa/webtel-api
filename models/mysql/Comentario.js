@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import connection from '../../libs/connection.js';
 
 export class ComentarioModel {

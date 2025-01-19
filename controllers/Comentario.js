@@ -21,7 +21,7 @@ export class ComentarioController {
             const result = validateComentario(request.body);
             if (result.error) return response.status(422).json({ error: JSON.parse(result.error.message)[0].code });
             const message = await this.ComentarioModel.create({ data: result.data });
-            response.json(message);
+            response.status(201).json(message);
         } catch (error) {
             console.log(error);
             response.status(500).json({ message: 'Error interno del servidor' });
